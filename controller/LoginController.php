@@ -11,6 +11,7 @@ class LoginController {
         $this->model = $model;
         $this->view = $view;
         $this->checkSession();
+        $this->checkCookies();
         $this->showForm();
         $this->createPage();
     }
@@ -18,6 +19,22 @@ class LoginController {
         if ($this->model->getSessionUsername()) {
             $this->loggedIn = true;
         }
+    }
+    public function checkCookies() {
+        if ($this->view->cookiesAreSet() && $this->loggedIn == false) {
+            if ($this->authenticate($this->view->getCookieUsername(), $this->view->getCookiePassword())) {
+                $this->view->cookieLoginSuccess();
+            } else {
+                $this->view->wrongCookieInfo();
+            }
+        }
+    }
+    public function authenticate($username, $password) {
+        if ($this->model->authenticate($username, $password)) {
+            $this->loggedIn = true;
+            return true;
+        }
+        return false;
     }
     public function createPage() {
         $time = $this->view->timeInSwedish();
@@ -42,9 +59,12 @@ class LoginController {
     public function loginUser() {
         if ($this->view->usernameEntered()) {
             if ($this->view->passwordEntered()) {
-                if ($this->model->authenticate($this->view->getUsername(), $this->view->getPassword())) {
-                    $this->loggedIn = true;
+                if ($this->authenticate($this->view->getUsername(), $this->view->getEncryptedPassword())) {
                     $this->view->loginSuccess();
+                    if ($this->view->getRemember()) {
+                        $this->view->setCookies();
+                        $this->view->rememberLoginSuccess();
+                    }
                 } else {
                     $this->view->wrongCredentials();
                 }
@@ -59,5 +79,6 @@ class LoginController {
         $this->view->logoutSuccess();
         $this->loggedIn = false;
         $this->model->removeSession();
+        $this->view->removeCookies();
     }
 }

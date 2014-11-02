@@ -9,6 +9,8 @@ class LoginView {
     private $submitName = "submit";
     private $logoutName = "logout";
     private $feedbackMessage = "";
+    private $cookieUsername = "name";
+    private $cookiePassword = "pass";
     public function __construct(LoginModel $model) {
         $this->model = $model;
     }
@@ -60,11 +62,14 @@ class LoginView {
     public function getPassword() {
         return $_POST[$this->passwordName];
     }
+    public function getEncryptedPassword() {
+        return $this->model->encrypt($this->getPassword());
+    }
     public function getRemember() {
         if (isset($_POST[$this->rememberName])) {
             return $_POST[$this->rememberName];
         }
-        return "";
+        return false;
     }
     public function formSubmitted() {
         return isset($_POST[$this->submitName]);
@@ -86,5 +91,33 @@ class LoginView {
     }
     public function logoutSuccess() {
         $this->feedbackMessage = "Du har nu loggat ut";
+    }
+    public function rememberLoginSuccess() {
+        $this->feedbackMessage = "Inloggning lyckades och vi kommer ihåg dig nästa gång";
+    }
+    public function cookieLoginSuccess() {
+        $this->feedbackMessage = "Inloggning lyckades via cookies";
+    }
+    public function wrongCookieInfo() {
+        $this->feedbackMessage = "Felaktig information i cookie";
+    }
+    public function setCookies() {
+        $cookieTime = time() + 60;
+        setcookie($this->cookieUsername, $this->getUsername(), $cookieTime);
+        setcookie($this->cookiePassword, $this->getEncryptedPassword(), $cookieTime);
+        $this->model->saveCookieTime($cookieTime);
+    }
+    public function removeCookies() {
+        setcookie($this->cookieUsername, "", time() - 60);
+        setcookie($this->cookiePassword, "", time() - 60);
+    }
+    public function cookiesAreSet() {
+        return (isset($_COOKIE[$this->cookieUsername]) && isset($_COOKIE[$this->cookiePassword]));
+    }
+    public function getCookieUsername() {
+        return $_COOKIE[$this->cookieUsername];
+    }
+    public function getCookiePassword() {
+        return $_COOKIE[$this->cookiePassword];
     }
 }

@@ -9,13 +9,6 @@ class LoginModel {
         $this->username = "Admin";
         $this->password = "Password";
     }
-    public function authenticate($username, $password) {
-        if ($this->username == $username && $this->password == $password) {
-            $_SESSION[$this->sessionName] = $username;
-            return true;
-        }
-        return false;
-    }
     public function removeSession() {
         session_destroy();
     }
@@ -25,5 +18,14 @@ class LoginModel {
         }
         return false;
     }
+    public function authenticate($username, $password) {
+        if ($this->username == $username && $this->encrypt($this->password) == $password) {
+            $_SESSION[$this->sessionName] = $username;
+            return true;
+        }
+        return false;
+    }
+    public function encrypt($string) {
+        return crypt($string, "NaCl");
+    }
 }
-
