@@ -4,6 +4,7 @@ class LoginModel {
     private $username;
     private $password;
     private $sessionName = "username";
+    private $sessionAgent = "agent";
     private $cookieTimeFile = "time.txt";
     public function __construct() {
         session_start();
@@ -19,9 +20,13 @@ class LoginModel {
         }
         return false;
     }
+    public function getSessionUserAgent() {
+        return $_SESSION[$this->sessionAgent];
+    }
     public function authenticate($username, $password) {
         if ($this->username == $username && $this->encrypt($this->password) == $password) {
             $_SESSION[$this->sessionName] = $username;
+            $_SESSION[$this->sessionAgent] = $_SERVER["HTTP_USER_AGENT"];
             return true;
         }
         return false;

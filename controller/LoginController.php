@@ -16,7 +16,7 @@ class LoginController {
         $this->createPage();
     }
     public function checkSession() {
-        if ($this->model->getSessionUsername()) {
+        if ($this->model->getSessionUsername() && $this->model->getSessionUserAgent() == $_SERVER["HTTP_USER_AGENT"]) {
             $this->loggedIn = true;
         }
     }
