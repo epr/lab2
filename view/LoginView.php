@@ -103,7 +103,7 @@ class LoginView {
         $this->removeCookies();
     }
     public function setCookies() {
-        $cookieTime = time() + 60;
+        $cookieTime = time() + 2592000; //30 days
         setcookie($this->cookieUsername, $this->getUsername(), $cookieTime);
         setcookie($this->cookiePassword, $this->getEncryptedPassword(), $cookieTime);
         $this->model->saveCookieTime($cookieTime);
