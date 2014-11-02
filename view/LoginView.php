@@ -15,7 +15,7 @@ class LoginView {
         $this->model = $model;
     }
     public function timeInSwedish() {
-        setlocale(LC_TIME, 'swedish');
+        setlocale(LC_ALL, 'sv_SE.UTF-8');
         return strftime('%A, den %e %B år %Y. Klockan är [%X].', time());
     }
     public function loginForm() {
