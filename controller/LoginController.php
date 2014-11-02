@@ -15,7 +15,7 @@ class LoginController {
         $this->createPage();
     }
     public function checkSession() {
-        if (isset($_SESSION["username"])) {
+        if ($this->model->getSessionUsername()) {
             $this->loggedIn = true;
         }
     }
@@ -28,7 +28,7 @@ class LoginController {
             $form = $this->view->loginForm();
         }
         echo $page->getPage("Lab 2", "
-        <h1>Laboration 2</h1>
+        <h1>Laborationskod eprcz09</h1>
         $form
         <p>$time</p>");
     }
@@ -58,6 +58,6 @@ class LoginController {
     public function logoutUser() {
         $this->view->logoutSuccess();
         $this->loggedIn = false;
-        unset($_SESSION["username"]);
+        $this->model->removeSession();
     }
 }

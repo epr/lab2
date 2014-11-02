@@ -55,7 +55,7 @@ class LoginView {
         if ($this->usernameEntered()) {
             return $_POST[$this->usernameName];
         }
-        return $_SESSION["username"];
+        return $this->model->getSessionUsername();
     }
     public function getPassword() {
         return $_POST[$this->passwordName];
