@@ -10,8 +10,14 @@ class LoginController {
     public function __construct(LoginModel $model, LoginView $view) {
         $this->model = $model;
         $this->view = $view;
+        $this->checkSession();
         $this->showForm();
         $this->createPage();
+    }
+    public function checkSession() {
+        if (isset($_SESSION["username"])) {
+            $this->loggedIn = true;
+        }
     }
     public function createPage() {
         $time = $this->view->timeInSwedish();
@@ -38,6 +44,7 @@ class LoginController {
             if ($this->view->passwordEntered()) {
                 if ($this->model->authenticate($this->view->getUsername(), $this->view->getPassword())) {
                     $this->loggedIn = true;
+                    $this->view->loginSuccess();
                 } else {
                     $this->view->wrongCredentials();
                 }
@@ -50,5 +57,7 @@ class LoginController {
     }
     public function logoutUser() {
         $this->view->logoutSuccess();
+        $this->loggedIn = false;
+        unset($_SESSION["username"]);
     }
 }

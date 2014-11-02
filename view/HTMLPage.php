@@ -7,7 +7,6 @@ class HTMLPage {
     <head>
         <meta charset=\"utf-8\">
         <title>$title</title>
-        <link rel=\"stylesheet\" href=\"screen.css\">
     </head>
     <body>$body</body>
 </html>";

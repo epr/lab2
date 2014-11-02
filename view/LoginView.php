@@ -19,7 +19,7 @@ class LoginView {
     public function loginForm() {
         return "
         <h2>Ej Inloggad</h2>
-        <form action=\"\" method=\"post\" name=\"login\">
+        <form action=\"#\" method=\"post\" name=\"login\">
             <fieldset>
                 <legend>Login - Skriv in användarnamn och lösenord</legend>
                 $this->feedbackMessage
@@ -39,7 +39,8 @@ class LoginView {
     public function logoutForm($username) {
         return "
         <h2>$username är inloggad</h2>
-        <form action=\"\" method=\"post\" name=\"logout\">
+        $this->feedbackMessage
+        <form action=\"#\" method=\"post\" name=\"logout\">
             <input type=\"submit\" name=\"$this->logoutName\" value=\"Logga ut\">
         </form>
         ";
@@ -51,7 +52,10 @@ class LoginView {
         return (isset($_POST[$this->passwordName]) && $_POST[$this->passwordName] != "");
     }
     public function getUsername() {
-        return $_POST[$this->usernameName];
+        if ($this->usernameEntered()) {
+            return $_POST[$this->usernameName];
+        }
+        return $_SESSION["username"];
     }
     public function getPassword() {
         return $_POST[$this->passwordName];
@@ -65,6 +69,9 @@ class LoginView {
     public function formSubmitted() {
         return isset($_POST[$this->submitName]);
     }
+    public function loggedOut() {
+        return isset($_POST[$this->logoutName]);
+    }
     public function usernameMissing() {
         $this->feedbackMessage = "Användarnamn saknas";
     }
@@ -74,8 +81,8 @@ class LoginView {
     public function wrongCredentials() {
         $this->feedbackMessage = "Felaktigt användarnamn och/eller lösenord";
     }
-    public function loggedOut() {
-        return isset($_POST[$this->logoutName]);
+    public function loginSuccess() {
+        $this->feedbackMessage = "Inloggning lyckades";
     }
     public function logoutSuccess() {
         $this->feedbackMessage = "Du har nu loggat ut";
