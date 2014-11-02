@@ -100,6 +100,7 @@ class LoginView {
     }
     public function wrongCookieInfo() {
         $this->feedbackMessage = "Felaktig information i cookie";
+        $this->removeCookies();
     }
     public function setCookies() {
         $cookieTime = time() + 60;

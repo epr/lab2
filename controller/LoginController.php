@@ -22,8 +22,9 @@ class LoginController {
     }
     public function checkCookies() {
         if ($this->view->cookiesAreSet() && $this->loggedIn == false) {
-            if ($this->authenticate($this->view->getCookieUsername(), $this->view->getCookiePassword())) {
+            if ($this->authenticate($this->view->getCookieUsername(), $this->view->getCookiePassword()) && $this->model->checkCookieTime()) {
                 $this->view->cookieLoginSuccess();
+                $this->loggedIn = true;
             } else {
                 $this->view->wrongCookieInfo();
             }
@@ -31,7 +32,6 @@ class LoginController {
     }
     public function authenticate($username, $password) {
         if ($this->model->authenticate($username, $password)) {
-            $this->loggedIn = true;
             return true;
         }
         return false;
@@ -61,6 +61,7 @@ class LoginController {
             if ($this->view->passwordEntered()) {
                 if ($this->authenticate($this->view->getUsername(), $this->view->getEncryptedPassword())) {
                     $this->view->loginSuccess();
+                    $this->loggedIn = true;
                     if ($this->view->getRemember()) {
                         $this->view->setCookies();
                         $this->view->rememberLoginSuccess();
